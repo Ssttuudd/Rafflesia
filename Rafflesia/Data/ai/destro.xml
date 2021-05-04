@@ -1,0 +1,15 @@
+
+<Attack>
+	<AutoAttack />
+	<Parallel>
+		<UseSkill skillId="255" cooldown="20.0" />
+	</Parallel>
+</Attack>
+
+<Main >
+	<FindTarget useBotSettings="True" />
+	<MoveToTarget stopDistance="120" />
+	<Attack />
+	<Pickup range="400" sweep="False" />
+	<Rest minHp="300" maxHp="600" />
+</Main>

@@ -1,0 +1,25 @@
+
+<Heal>
+	<UseSkill skillId="1610" cooldown="20">
+		<Condition name="CharacterStat" stat="Hp" target="Target" comparison="Bellow" value="600" result="True"/>
+	</UseSkill>
+</Heal>
+
+<Follow>
+	<FollowTarget startDistance="200" stopDistance="100" />
+	<Parallel exitPolicy="OnePass">
+		<UseSkill skillId="1007" cooldown="5">	<!-- Chant of battle -->
+			<Condition name="PlayerHasBuff" buffId="1007" result="False"/>
+		</UseSkill>
+		<UseSkill skillId="1009" cooldown="5">	<!-- Chant of shielding -->
+			<Condition name="PlayerHasBuff" buffId="1009" result="False"/>
+		</UseSkill>
+	</Parallel>
+</Follow>
+
+<Main >
+	<FindTarget useBotSettings="False">
+		<Condition name="HasName" targetName="TheVelvetThunder" />
+	</FindTarget>
+	<Heal />
+</Main>

@@ -45,6 +45,9 @@ The following dependencies are used as submodules
 ```
 
 # How to get started
+## Git
+Clone and get submodules. git-lfs is used for data files.
+
 ## Reverse engineering and injection
 First off, you'll need to fill in the offset values in Offset.h. Basically you need to locate the offset of the encrypt, decrpyt and sendPacket functions, which isn't that hard if you can break on WS2_32::send and WS2_32::recv. Check the value of SEND_PACKET_INFO as well while you're in WS2_32::send.
 

@@ -1,0 +1,28 @@
+<Spoil>
+	<UseSkill skillId="254" cooldown="5">
+		<Condition name="IsSpoiled" result="False"/>
+	</UseSkill>
+</Spoil>
+
+<Attack>
+	<AutoAttack />
+	<Parallel>
+		<Spoil />
+	</Parallel>
+</Attack>
+
+<Main >
+	<FindTarget>
+		<Condition name="IsAttackable" result="True"/>
+		<Condition name="IsInPolygon" result="True"/>
+		<Condition name="IsNpc" result="True"/>
+		<Condition name="IsFiltered" result="False"/>
+	</FindTarget>
+	<MoveToTarget stopDistance="120" />
+	<Attack />
+	<Pickup range="400" sweep="True" />
+	<Rest minHp="200" maxHp="300" />
+	<Parallel>
+		<AcceptParty name="Boudin2"/>
+	</Parallel>
+</Main>
