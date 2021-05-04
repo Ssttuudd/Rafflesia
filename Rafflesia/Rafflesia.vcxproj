@@ -104,7 +104,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Shared\IpcShared.cpp" />
     <ClCompile Include="Bot\Bot.cpp" />
     <ClCompile Include="Bot\Task\Condition.cpp" />
     <ClCompile Include="Bot\Task\TaskFindTarget.cpp" />
