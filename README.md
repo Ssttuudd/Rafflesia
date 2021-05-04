@@ -46,8 +46,9 @@ The following dependencies are used as submodules
 
 # How to get started
 ## Reverse engineering and injection
-First off, you'll need to fill in the offset values in Offset.h. Basically you need to locate the offset of the encrypt, decrpyt and sendPacket functions, which isn't that hard if you can break on WS2_32::send and WS2_32::recv. Check the value of SEND_PACKET_INFO as well while you're in WS2_32::send. 
-/!\ Do not use ingame character movement to get those offset, the client use different functions for the movements.
+First off, you'll need to fill in the offset values in Offset.h. Basically you need to locate the offset of the encrypt, decrpyt and sendPacket functions, which isn't that hard if you can break on WS2_32::send and WS2_32::recv. Check the value of SEND_PACKET_INFO as well while you're in WS2_32::send.
+
+/!\ Do not trigger the calls to recv and send by moving your character ingame. The functions in these call trees are specific to the movement logic.
 
 Now that you have the offsets, you need something to inject the dll. This project doesn't inject the dll directly, it uses an injector that isn't provided here. Change the values in Injection/Injector.h and check the deleguateInjection function in Injection/Injector.cpp to see if the command line works with the injector you chose.
 
@@ -58,7 +59,7 @@ The bot will not inject any client automatically, instead it'll show you the lis
 
 In order to have a small dll and a better maintanability, the bot uses the network packets to get the informations from the game instead of reading its memory. For this reason, you'll need to have the bot linked with your client before you select your character. If you inject the dll while already ingame, going to the character selection screen and then back into the game will work too.
 
-The dll will be unloaded anytime you disconnect the external bot. If you stop the external process (typically you break in debug and stop to fix something), the dll might not unload properly. In this case, you can use the VK_PAUSE key to order the dll to unload.
+The dll will be unloaded anytime you disconnect the external bot. If you stop the external process (typically by breaking somewhere in debug and stoping the process to fix something), the dll might not unload properly. In this case, you can use the VK_PAUSE key to order the dll to unload.
 
 ## Using the bot
 I won't list all the stuff you can do in the UI, just click around and discover by yourself.
