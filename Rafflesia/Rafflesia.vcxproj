@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{93B11861-DA5A-4641-B1B7-3987737ED4CE}</ProjectGuid>
+    <Keyword>QtVS_v303</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.18362.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtUic>
+      <QtUicDir>$(IntDir)uic\</QtUicDir>
+    </QtUic>
+    <ClCompile>
+      <AdditionalIncludeDirectories>Qt;.\;../;third_party/rapidjson/include;third_party/luaBridge/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>$(Qt_DEFINES_);%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
+    </ClCompile>
+    <Link />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>Qt;.\;../;third_party/rapidjson/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>$(Qt_DEFINES_);%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>msvc2019_64</QtInstall>
+    <QtModules>quick;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>qt6</QtInstall>
+    <QtModules>quick;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Shared\IpcShared.cpp" />
+    <ClCompile Include="Bot\Bot.cpp" />
+    <ClCompile Include="Bot\Task\Condition.cpp" />
+    <ClCompile Include="Bot\Task\TaskFindTarget.cpp" />
+    <ClCompile Include="Bot\MapPolygon.cpp" />
+    <ClCompile Include="Bot\Task\TaskMove.cpp" />
+    <ClCompile Include="Game\Catalog.cpp" />
+    <ClCompile Include="Game\InventoryItem.cpp" />
+    <ClCompile Include="Qt\Inventory\IntentoryItemElement.cpp" />
+    <ClCompile Include="Qt\Inventory\InventoryList.cpp" />
+    <ClCompile Include="Qt\Radar\ItemListElement.cpp" />
+    <ClCompile Include="Qt\Radar\ItemList.cpp" />
+    <ClCompile Include="Qt\QtUtils.cpp" />
+    <ClCompile Include="Qt\Radar\CharacterList.cpp" />
+    <ClCompile Include="Qt\Radar\CharListElement.cpp" />
+    <ClCompile Include="Game\Network\Packet140.cpp" />
+    <ClCompile Include="Qt\ClientItem.cpp" />
+    <ClCompile Include="Qt\ClientsHandler.cpp" />
+    <ClCompile Include="Game\Character.cpp" />
+    <ClCompile Include="Game\Actor.cpp" />
+    <ClCompile Include="Game\Game.cpp" />
+    <ClCompile Include="Game\MathUtils.cpp" />
+    <ClCompile Include="Game\Network\PacketSpecial.cpp" />
+    <ClCompile Include="Game\Status.cpp" />
+    <ClCompile Include="Injection\Injector.cpp" />
+    <ClCompile Include="Ipc.cpp" />
+    <ClCompile Include="Game\DroppedItem.cpp" />
+    <ClCompile Include="Game\LocalPlayer.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Game\Network\PacketHandler.cpp" />
+    <ClCompile Include="Game\Npc.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\Network\Packet306.cpp" />
+    <ClCompile Include="Qt\MainWindow.cpp" />
+    <ClCompile Include="Qt\Radar\MapFrame.cpp" />
+    <ClCompile Include="Qt\PlayerTab.cpp" />
+    <ClCompile Include="Qt\QHexView.cpp" />
+    <ClCompile Include="Bot\Task\TaskMoveToTarget.cpp" />
+    <ClCompile Include="Qt\ToggleButtonWidget.cpp" />
+    <ClCompile Include="Qt\Radar\RadarWidget.cpp" />
+    <ClCompile Include="Bot\TaskSerializer.cpp" />
+    <ClCompile Include="third_party\pugixml\src\pugixml.cpp" />
+    <ClCompile Include="utils.cpp" />
+    <None Include="packages.config" />
+    <QtRcc Include="qml.qrc" />
+    <None Include="main.qml" />
+    <QtRcc Include="qt.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Shared\IpcShared.h" />
+    <ClInclude Include="..\Shared\Protocol.h" />
+    <ClInclude Include="Bot\Bot.h" />
+    <ClInclude Include="Bot\Task\Condition.h" />
+    <ClInclude Include="Bot\Task\TaskAcceptParty.hpp" />
+    <ClInclude Include="Bot\Task\TaskAttack.hpp" />
+    <ClInclude Include="Bot\Task\TaskAutoAttack.hpp" />
+    <ClInclude Include="Bot\Task\TaskFindTarget.h" />
+    <ClInclude Include="Bot\Task\TaskFollow.hpp" />
+    <ClInclude Include="Bot\Task\TaskIdle.hpp" />
+    <ClInclude Include="Bot\Task\TaskMove.h" />
+    <ClInclude Include="Bot\Task\TaskPickup.hpp" />
+    <QtMoc Include="Qt\ClientsHandler.h" />
+    <QtMoc Include="Qt\ClientItem.h" />
+    <QtMoc Include="Qt\Radar\CharListElement.h" />
+    <QtMoc Include="Qt\Radar\CharacterList.h" />
+    <ClInclude Include="Bot\Task\TaskRest.hpp" />
+    <ClInclude Include="Bot\Task\TaskSweep.hpp" />
+    <ClInclude Include="Bot\Task\TaskUseItem.hpp" />
+    <ClInclude Include="Bot\MapPolygon.h" />
+    <ClInclude Include="Game\Catalog.h" />
+    <ClInclude Include="Game\InventoryItem.h" />
+    <QtMoc Include="Qt\Inventory\InventoryList.h" />
+    <QtMoc Include="Qt\Inventory\IntentoryItemElement.h" />
+    <ClInclude Include="Qt\Radar\ActorListWidgetItem.hpp" />
+    <ClInclude Include="Game\Character.h" />
+    <ClInclude Include="Game\Actor.h" />
+    <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\GameData.h" />
+    <ClInclude Include="Game\IGameNotify.h" />
+    <ClInclude Include="Game\MathUtils.h" />
+    <ClInclude Include="Game\Network\Packet140.h" />
+    <ClInclude Include="Game\Network\PacketSpecial.h" />
+    <ClInclude Include="Game\Network\PacketStream.h" />
+    <ClInclude Include="Game\Network\Packet306.h" />
+    <ClInclude Include="Game\Status.h" />
+    <ClInclude Include="Injection\Injector.h" />
+    <ClInclude Include="Injection\safe_handle.hpp" />
+    <ClInclude Include="Game\Network\PacketHandler.h" />
+    <ClInclude Include="Game\Npc.h" />
+    <ClInclude Include="Game\DroppedItem.h" />
+    <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\LocalPlayer.h" />
+    <QtMoc Include="Qt\Radar\ItemList.h" />
+    <QtMoc Include="Qt\Radar\ItemListElement.h" />
+    <ClInclude Include="Qt\QtUtils.h" />
+    <QtMoc Include="Qt\Radar\MapFrame.h" />
+    <ClInclude Include="Qt\QHexView.h" />
+    <ClInclude Include="Bot\Task\Task.h" />
+    <ClInclude Include="Bot\Task\TaskMoveToTarget.h" />
+    <ClInclude Include="Bot\Task\TaskUseSkill.hpp" />
+    <QtMoc Include="Qt\ToggleButtonWidget.h" />
+    <QtMoc Include="Qt\Radar\RadarWidget.h" />
+    <ClInclude Include="Bot\TaskSerializer.h" />
+    <ClInclude Include="third_party\pugixml\src\pugiconfig.hpp" />
+    <ClInclude Include="third_party\pugixml\src\pugixml.hpp" />
+    <ClInclude Include="utils.h" />
+    <QtMoc Include="Ipc.h" />
+    <QtMoc Include="Qt\MainWindow.h" />
+    <QtMoc Include="Qt\PlayerTab.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="Qt\Inventory\IntentoryItemElement.ui" />
+    <QtUic Include="Qt\Inventory\InventoryList.ui" />
+    <QtUic Include="Qt\Radar\ItemListElement.ui" />
+    <QtUic Include="Qt\Radar\CharacterList.ui" />
+    <QtUic Include="Qt\Radar\CharListElement.ui" />
+    <QtUic Include="Qt\ClientItem.ui" />
+    <QtUic Include="Qt\ClientsHandler.ui" />
+    <QtUic Include="Qt\Radar\ItemList.ui" />
+    <QtUic Include="Qt\MainWindow.ui" />
+    <QtUic Include="Qt\PlayerTab.ui" />
+    <QtUic Include="Qt\ToggleButtonWidget.ui" />
+    <QtUic Include="Qt\Radar\RadarWidget.ui" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\lua.5.4.2\build\native\Lua.targets" Condition="Exists('..\packages\lua.5.4.2\build\native\Lua.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\lua.5.4.2\build\native\Lua.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\lua.5.4.2\build\native\Lua.targets'))" />
+  </Target>
+</Project>

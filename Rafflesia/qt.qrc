@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="/icons">
+    <file alias="default.png">Data/Icons/Icon.accessary_i.accessary_adamantite_earing_i00.dds</file>
+    <file alias="close.png">Data/Icons/close.png</file>
+    <file alias="plus.png">Data/Icons/plus.png</file>
+    <file alias="bin.png">Data/Icons/bin.png</file>
+    <file alias="polygonExclude.png">Data/Icons/polygonExclude.png</file>
+    <file alias="polygonInclude.png">Data/Icons/polygonInclude.png</file>
+    <file alias="detachedIcon.png">Data/Icons/detached.png</file>
+    <file alias="pauseIcon.png">Data/Icons/pause.png</file>
+    <file alias="runningIcon.png">Data/Icons/running.png</file>
+    <file alias="invalidIcon.png">Data/Icons/invalid.png</file>
+    <file alias="validIcon.png">Data/Icons/valid.png</file>
+  </qresource>
+</RCC>
