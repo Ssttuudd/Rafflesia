@@ -51,10 +51,15 @@ public:
 };
 
 struct BotSettings {
-	bool usePolygons;
+	bool findTarget;
+	bool ignoreTargetZones;
 	bool useFamilyFilters;
 	bool useUniqueObjectFilters;
 	bool targetAggroFirst;
+	bool pickupLoots;
+	bool pickupBetweenFights;
+	bool sweep;
+	int pickupRange;
 };
 
 struct PolygonPosition {
@@ -70,6 +75,7 @@ class Bot
 {
 public:
 	Bot(Game* game, PacketHandler* packetHandler, PlayerTab* _playerTab);
+	~Bot();
 
 
 	void update(float dt);
@@ -80,7 +86,7 @@ public:
 	void addPolygonPoint(Position point);
 	void removePolygonPosition(const PolygonPosition& id);
 	void movePolygonPoint(const PolygonPosition& id, const Position& position);
-	bool isInPolygons(const Position& position);
+	bool isInPolygons(const Position& position) const;
 	const std::vector<MapPolygon>& getPolygons() const;
 
 	void toggleStart();
@@ -116,10 +122,12 @@ private:
 	PacketHandler* packetHandler;
 	PlayerTab* playerTab;
 	LocalPlayerPtr player;
-	std::shared_ptr<Task> mainTask = nullptr;
 	std::vector<BotTimer> antiFloodTimers;
 	size_t taskPosition = 0;
 	BotSettings settings;
+
+	std::shared_ptr<Task> mainTask = nullptr;
+	std::vector<std::unique_ptr<Task>> settingsTasks;
 
 	std::vector<MapPolygon> polygons;
 

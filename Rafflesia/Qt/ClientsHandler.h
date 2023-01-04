@@ -6,6 +6,8 @@
 #include "ui_ClientsHandler.h"
 
 class MainWindow;
+class ClientItem;
+
 class ClientsHandler : public QWidget
 {
 	Q_OBJECT
@@ -23,12 +25,14 @@ public slots:
 	void onAttachToAllClicked();
 	void onAttachClicked();
 	void onSelectedClientChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	
+	void onAutoAttachChanged( bool value );
 
 private:
+	void tryAutoAttachClient( ClientItem* item );
+
 	Ui::ClientsHandler ui;
 	QTimer updateTimer;
-	MainWindow* tabHolder;
-	int selectedPid = 0;
-	bool hidden = false;
+	MainWindow* tabHolder{ nullptr };
+	int selectedPid{ 0 };
+	bool hidden{ false };
 };

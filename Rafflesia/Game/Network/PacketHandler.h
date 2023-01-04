@@ -1,12 +1,11 @@
 #pragma once
 
-#include <functional>
 #include <map>
 #include <vector>
 
 #include "Game/Game.h"
-#include "PacketStream.h"
 #include "Shared/Protocol.h"
+#include "Packet.h"
 
 class INetworkInterface {
 public:
@@ -18,7 +17,8 @@ class PacketHandler
 public:
 	PacketHandler(Game& game, INetworkInterface* networkInterface);
 
-	void parse(const std::vector<char>& data, bool sent);
+	bool isPacketValid( const std::vector<char>& data ) const;
+	APacket* getPacket( const std::vector<char>& data, bool clientToServer );
 
 	void requestAction(EAction action);
 	void requestPickup(const DroppedItem* item);
@@ -28,15 +28,12 @@ public:
 	void useItem(uint32_t itemId);
 	void answerPartyRequest(bool answer);
 	void requestDropItem(uint32_t itemId, uint64_t quantity, const Position& position);
-	void validatePosition(Character* character);
-
-	void init306();
-	void init140();
+	void requestGameInfos();
 
 private:
 	Game& game;
 	INetworkInterface* networkInterface;
-	std::map<EPacketSC, std::function<void(PacketIStream&, Game&)>> parseMapSC;
-	std::map<EPacketCS, std::function<void(PacketIStream&, Game&)>> parseMapCS;
+	std::map<EPacketSC, APacket> parseMapSC;
+	std::map<EPacketCS, APacket> parseMapCS;
 };
 

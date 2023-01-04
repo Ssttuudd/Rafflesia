@@ -12,14 +12,22 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	ui.setupUi(this);
 	ui.clientsHandler->init(this);
+
+	checkFiles();
 }
 
-void MainWindow::attachClient(int pid) {
-	if (pid > 0 && !isClientAttached(pid)) {
-		auto newTab = new PlayerTab(pid, ui.tabWidget->count(), this);
-		connect(newTab, &PlayerTab::tabClose, this, &MainWindow::onTabClosed);
-		ui.tabWidget->addTab(newTab, std::to_string(pid).c_str());
-		deleguateInjection(pid);
+void MainWindow::attachClient( int pid ) {
+	if( pid > 0 && !isClientAttached( pid ) )
+	{
+		auto newTab = new PlayerTab( pid, ui.tabWidget->count(), this );
+		connect( newTab, &PlayerTab::tabClose, this, &MainWindow::onTabClosed );
+		int tabId = ui.tabWidget->addTab( newTab, std::to_string( pid ).c_str() );
+
+		if( !injectRoot( pid ) )
+		{
+			ui.tabWidget->removeTab( tabId );
+			delete newTab;
+		}
 	}
 }
 
@@ -27,7 +35,7 @@ MainWindow::~MainWindow()
 {
 	for (int i = ui.tabWidget->count(); i > 0; i--)
 	{
-		ui.tabWidget->widget(i - 1)->deleteLater();
+		delete ui.tabWidget->widget(i - 1);
 		ui.tabWidget->removeTab(i - 1);
 	}
 }
@@ -52,6 +60,7 @@ void MainWindow::onTabClosed(int pid) {
 	{
 		PlayerTab* tab = (PlayerTab*)ui.tabWidget->widget(i);
 		if (tab->getPid() == pid) {
+			tab->stop();
 			ui.tabWidget->removeTab(i);
 			delete tab;
 			return;

@@ -9,11 +9,11 @@ public:
 	bool update(float dt, Game& game, Bot& bot) override;
 
 private:
-	int stopDistance;
-	bool sentPacket = false;
+	int stopDistance{ 0 };
+	bool sentPacket{ false };
 	Position targetLocation;
-	float timeSinceLastmove;
-	float moveCooldown = 1;
+	float timeSinceLastmove{ 0.0f };
+	float moveCooldown{ 1.0f };
 
 	void moveToTarget(Bot& bot);
 };

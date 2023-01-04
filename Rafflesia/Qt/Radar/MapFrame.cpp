@@ -228,6 +228,7 @@ void MapFrame::paintEvent(QPaintEvent*)
 		auto entityPos = gameToMap(entity->getPosition());
 		auto size = 0;
 
+		fillColor = Qt::white;
 		if (entity->isPlayer()) {
 			borderColor = QColor("#FF5D00");
 			size = PLAYER_SIZE;
@@ -240,18 +241,22 @@ void MapFrame::paintEvent(QPaintEvent*)
 				size = MOB_SIZE;
 				entityPos.setX(entityPos.x() - MOB_SIZE / 2);
 				entityPos.setY(entityPos.y() - MOB_SIZE / 2);
+
+				if( entity.get() == player->getTarget() && entity->isNpc() )
+				{
+					fillColor = Qt::red;
+					borderColor = Qt::red;
+				}
 			}
 			else {
 				borderColor = QColor("#E42194");
 				size = NPC_SIZE;
 				entityPos.setX(entityPos.x() - NPC_SIZE / 2);
 				entityPos.setY(entityPos.y() - NPC_SIZE / 2);
-			}
-		}
-		fillColor = borderColor;
 
-		if (entity.get() == player->getTarget() && entity->isNpc()) {
-			fillColor = QColor("#e342f5");
+				if( entity.get() == player->getTarget() && entity->isNpc() )
+					fillColor = QColor( "#82f542" );
+			}
 		}
 		if (entity->getTarget() == player.get()) {
 			borderColor = QColor("#e342f5");
@@ -260,7 +265,7 @@ void MapFrame::paintEvent(QPaintEvent*)
 	}
 
 	// Finaly local player
-	painter.setPen(QPen(Qt::white, 1));
+	painter.setPen(QPen(Qt::green, 2));
 	QPoint topLeft(widgetMidWidth - LOCAL_PLAYER_SIZE, widgetMidHeight - LOCAL_PLAYER_SIZE);
 	QPoint bottomRight(widgetMidWidth + LOCAL_PLAYER_SIZE, widgetMidHeight + LOCAL_PLAYER_SIZE);
 	painter.drawRect(QRect(topLeft, bottomRight));

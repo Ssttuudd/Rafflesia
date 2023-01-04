@@ -12,6 +12,8 @@ public:
 	~ClientItem();
 
 	void setInfos(int pid, std::string name, bool attached);
+	void setAacATtached( bool value );
+	bool isAacAttached() const;
 
 	int getPid() {
 		return pid;
@@ -23,4 +25,5 @@ private:
 	QPixmap validIcon;
 	QPixmap invalidIcon;
 
+	bool aacAttached{ false };
 };

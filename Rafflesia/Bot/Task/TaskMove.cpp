@@ -11,9 +11,8 @@ void TaskMove::enter(Game& game, Bot& bot) {
 }
 
 bool TaskMove::update(float dt, Game& game, Bot& bot) {
-	/*if (!player->canMove()) {
+	if( !player || player->isDead() )
 		return false;
-	}*/
 
 	Task::update(dt, game, bot);
 

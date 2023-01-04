@@ -9,6 +9,7 @@
 
 class PacketHandler;
 class GameLogic;
+class Position;
 
 class Ipc : public QThread, public INetworkInterface
 {
@@ -17,12 +18,14 @@ public:
 	~Ipc();
 
 	bool connect(DWORD pid);
+	void stop() { shouldStop = true; }
 
 private:
-	DWORD pid = 0;
-	HANDLE pipeReceive;
-	HANDLE pipeSend;
-	BYTE* buffer;
+	DWORD pid{ 0 };
+	HANDLE pipeReceive{ nullptr };
+	HANDLE pipeSend{ nullptr };
+	BYTE* buffer{ nullptr };;
+	bool shouldStop{ false };
 
 	bool receivedHello = false;
 
@@ -33,6 +36,8 @@ protected:
 
 signals:
 	void sendMessage(QString);
-	void onPacketData(const std::vector<char>&, bool);
+	void onPacketData( const std::vector<char>&, bool );
+	void onGameInfos(const Position& playerPosition);
+	void onRootConnected();
 };
 

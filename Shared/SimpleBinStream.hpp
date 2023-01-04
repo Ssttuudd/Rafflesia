@@ -479,7 +479,6 @@ namespace simple
 			m_index += str.size();
 		}
 
-
 		wchar_t swapEndian(wchar_t u)
 		{
 			return (u >> 8) | ((u & 0xFF) << 8);
@@ -495,7 +494,7 @@ namespace simple
 
 			for (int i = 0; i < size * sizeof(wchar_t); i+= 2 ) {
 
-				str += (WCHAR)swapEndian(*(wchar_t*)&m_vec[m_index + i]);
+				str += (wchar_t)swapEndian(*(wchar_t*)&m_vec[m_index + i]);
 			}
 
 			m_index += size * sizeof(wchar_t) + 2;	// +2 for \0

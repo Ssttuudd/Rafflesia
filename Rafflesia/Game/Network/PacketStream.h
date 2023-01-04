@@ -2,6 +2,8 @@
 
 #include <type_traits>
 
+#include "Shared/SimpleBinStream.hpp"
+
 namespace simple {
 	template<typename Type>
 	class mem_istream;

@@ -22,7 +22,7 @@ void Character::setDead()
 
 #include <QDebug>
 #include <QString>
-void Character::setDestination(int32_t x, int32_t y, int32_t z)
+void Character::setDestination( int32_t x, int32_t y, int32_t z)
 {
 	timeSinceLastMove = 0;
 	moving = true;

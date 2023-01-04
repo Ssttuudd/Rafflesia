@@ -17,15 +17,16 @@ public:
 	void sendStart();
 	void sendIpc(const char* data, size_t len);
 	void sendTcp(const char* buffer);
-	void sendNpcInfo(int32_t id, uint32_t npcId, bool isAttackable, int32_t x, int32_t y, int32_t z);
-	void sendLocalPlayerInfo(int32_t id, uint32_t npcId, bool isAttackable, int32_t x, int32_t y, int32_t z, std::wstring name);
+	void sendGameInfos();
 	bool shouldShutdown();
 
 private:
+	void connect();
+
 	HANDLE pipeReceive;
 	HANDLE pipeSend;
 	BYTE* buffer;
-	bool receivedShutdown = false;
+	bool needShutdown = false;
 	Game* game;
 };
 

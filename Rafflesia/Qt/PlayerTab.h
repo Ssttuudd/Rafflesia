@@ -27,6 +27,8 @@ public:
 	PlayerTab(int pid, int tabId, MainWindow* parent = Q_NULLPTR);
 	int getPid();
 
+	void stop();
+
 	// IGameNotify
 	void onPlayerStatusChange(Character* character) override;
 	void onPlayerTargetChange(Character* target) override;
@@ -43,10 +45,12 @@ public:
 	void onInventoryItemUpdate(InventoryItem* item) override;
 	void onInventoryItemRemoved(uint32_t objectId) override;
 
+
 public slots:
 	void logMessage(QString msg);
 	void socketClosed();
 	void onPacketReceived(const std::vector<char>& data, bool sent);
+	void onGameInfos( const Position& playerPosition );
 	void onFilterButtonClicked();
 	void selectedPacketChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void charListElementSelected(Character* element);
@@ -54,7 +58,9 @@ public slots:
 	void ignoreMobfamily(uint32_t npcId);
 	void ignoreObject(uint32_t objectId);
 	void onCloseButtonClicked();
-	void updateSettings(bool value);
+	void onSettingsChangedBool(bool value);
+	void onSettingsChangedInt(int value);
+	void onRootConnected();
 
 signals:
 	void tabClose(int pid);
@@ -69,8 +75,6 @@ private:
 	PacketHandler packetHandler;
 	EBotState botState = EBotState::Detached;
 
-	QStringList logStringList;
-	QStringListModel logModel;
 	QTimer updateTimer;
 	QElapsedTimer timeCounter;
 	int pid;
@@ -78,7 +82,8 @@ private:
 
 	std::vector<char> filteredOpcode;
 
-	void addPacketInList(const std::vector<char>& data, bool sent);
 	void updateState(EBotState state);
 	void toggleStart();
+	void updateBotSettings();
+	void saveSettings();
 };

@@ -58,15 +58,14 @@ void Ipc::run()
 	DWORD dwRead = 0;
 	std::vector<char> data(IPC_BUFFER_SIZE, ' ');
 
-	bool shouldStop = false;
 	while (!shouldStop) {
-		if (ConnectNamedPipe(pipeReceive, NULL) != FALSE) {
-			while (ReadFile(pipeReceive, data.data(), IPC_BUFFER_SIZE, &dwRead, NULL) != FALSE) {
+		if (ConnectNamedPipe(pipeReceive, nullptr)) {
+			while (!shouldStop && ReadFile(pipeReceive, data.data(), IPC_BUFFER_SIZE, &dwRead, nullptr)) {
 				simple::ptr_istream<std::true_type> in(data);
 				bool printed = false;
 				//qDebug("################################################################");
 				//qDebug("%s\n", hexStr((unsigned char*)data.data(), dwRead).c_str());
-				while (in.tellg() < dwRead) {
+				while ( !shouldStop && in.tellg() < dwRead) {
 					int curPos = in.tellg();
 					uint16_t length = 0;
 					uint16_t code;
@@ -75,7 +74,7 @@ void Ipc::run()
 
 					switch ((ECode)code) {
 					case ECode::START:
-						sendMessage("Received hello");
+						onRootConnected();
 						break;
 					case ECode::PACKET_RCV:
 					case ECode::PACKET_SND:
@@ -87,6 +86,11 @@ void Ipc::run()
 						//qDebug("	%s\n", hexStr((unsigned char*)packetData.data(), packetLen).c_str());
 						onPacketData(packetData, (ECode)code == ECode::PACKET_SND);
 					}
+					break;
+					case ECode::GAME_INFO:
+						Position playerPos;
+						in >> playerPos;
+						onGameInfos( playerPos );
 					break;
 					}
 				}

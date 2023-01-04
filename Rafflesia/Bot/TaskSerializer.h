@@ -5,7 +5,7 @@
 
 #include "third_party/pugixml/src/pugixml.hpp"
 
-#include "Task/Condition.h"
+#include "Bot/Condition/Condition.h"
 #include "Task/Task.h"
 
 struct InvalidXmlTask : public std::exception
@@ -33,6 +33,6 @@ private:
 
 	Task::TaskPtr parseChildTask(pugi::xml_node childNode, const std::string & taskName);
 	Task::TaskPtr parseTask(pugi::xml_node node);
-	Condition::ConditionFunc parseCondition(pugi::xml_node node);
+	Conditions::ACondition* parseCondition(pugi::xml_node node);
 };
 

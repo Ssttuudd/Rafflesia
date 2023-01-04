@@ -14,7 +14,7 @@ void TaskFindTarget::enter(Game& game, Bot& bot) {
 }
 
 bool TaskFindTarget::update(float dt, Game& game, Bot& bot) {
-	if (!player) {
+	if (!player || player->isDead()) {
 		return false;
 	}
 	if (foundTarget) {

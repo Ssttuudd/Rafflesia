@@ -12,7 +12,7 @@
 #include "Game/Npc.h"
 
 class CharListWidgetItem : public QListWidgetItem {
-	bool CharListWidgetItem::operator <(const QListWidgetItem& other) const
+	bool operator <(const QListWidgetItem& other) const
 	{
 		auto data = (CharListElement*)listWidget()->itemWidget((QListWidgetItem*)this);
 		auto dataOther = (CharListElement*)listWidget()->itemWidget((QListWidgetItem*)&other);
@@ -43,7 +43,7 @@ void CharacterList::init(Game* _game, Bot* _bot) {
 void CharacterList::update(float dt) {
 	auto player = game->getPlayer();
 	if (player) {
-		auto playerPos = player->getPosition();
+		auto playerPos = player->getClientPosition();
 		for (int i = 0; i < ui.charList->count(); ++i)
 		{
 			auto* item = ui.charList->item(i);
@@ -58,7 +58,7 @@ void CharacterList::update(float dt) {
 			}
 		}
 	}
-	ui.charList->sortItems();
+	//ui.charList->sortItems();
 }
 
 void CharacterList::addCharacter(Character* character) {

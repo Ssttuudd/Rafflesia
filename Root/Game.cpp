@@ -49,39 +49,39 @@ void Game::sendPacket(const char* buffer) {
 
     printf("%s \n", msg.c_str());
     if (formatLength == 1) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0]);
+       sendClientPacket( packetFormaterAddr, format, parameters[0]);
     }
     else if (formatLength == 2) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0], parameters[1]);
+       sendClientPacket( packetFormaterAddr, format, parameters[0], parameters[1]);
     }
     else if (formatLength == 3) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0], parameters[1], parameters[2]);
+       sendClientPacket( packetFormaterAddr, format, parameters[0], parameters[1], parameters[2]);
     }
     else if (formatLength == 4) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0], parameters[1], parameters[2], parameters[3]);
+       sendClientPacket( packetFormaterAddr, format, parameters[0], parameters[1], parameters[2], parameters[3]);
     }
     else if (formatLength == 5) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0], parameters[1], parameters[2], parameters[3],
+       sendClientPacket( packetFormaterAddr, format, parameters[0], parameters[1], parameters[2], parameters[3],
             parameters[4]);
     }
     else if (formatLength == 6) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0], parameters[1], parameters[2], parameters[3],
+       sendClientPacket( packetFormaterAddr, format, parameters[0], parameters[1], parameters[2], parameters[3],
             parameters[4], parameters[5]);
     }
     else if (formatLength == 7) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0], parameters[1], parameters[2], parameters[3],
+       sendClientPacket( packetFormaterAddr, format, parameters[0], parameters[1], parameters[2], parameters[3],
             parameters[4], parameters[5], parameters[6]);
     }
     else if (formatLength == 8) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0], parameters[1], parameters[2], parameters[3],
+       sendClientPacket( packetFormaterAddr, format, parameters[0], parameters[1], parameters[2], parameters[3],
             parameters[4], parameters[5], parameters[6], parameters[7]);
     }
     else if (formatLength == 9) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0], parameters[1], parameters[2], parameters[3],
+       sendClientPacket( packetFormaterAddr, format, parameters[0], parameters[1], parameters[2], parameters[3],
             parameters[4], parameters[5], parameters[6], parameters[7], parameters[8]);
     }
     else if (formatLength == 10) {
-       sendClientPacket(SEND_PACKET_INFO, format, parameters[0], parameters[1], parameters[2], parameters[3],
+       sendClientPacket( packetFormaterAddr, format, parameters[0], parameters[1], parameters[2], parameters[3],
             parameters[4], parameters[5], parameters[6], parameters[7], parameters[8], parameters[9]);
     }
 }

@@ -11,7 +11,7 @@
 #include "Game/MathUtils.h"
 
 class ItemListWidgetItem : public QListWidgetItem {
-	bool ItemListWidgetItem::operator <(const QListWidgetItem& other) const
+	bool operator <(const QListWidgetItem& other) const
 	{
 		auto data = (ItemListElement*)listWidget()->itemWidget((QListWidgetItem*)this);
 		auto dataOther = (ItemListElement*)listWidget()->itemWidget((QListWidgetItem*)&other);

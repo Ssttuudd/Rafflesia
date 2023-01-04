@@ -24,7 +24,7 @@ public:
 
 private:
 	std::vector<Position> positions;
-	EPolygon polygonType;
+	EPolygon polygonType{ EPolygon::Include };
 };
 
 

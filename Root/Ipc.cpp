@@ -38,63 +38,20 @@ void Ipc::sendStart() {
     simple::mem_ostream<std::true_type> out;
 
     out << (uint16_t)0; // packet size placeholder;
-    out << (uint8_t)ECode::START;
+    out << (uint16_t)ECode::START;
 
     const auto& dataVec = out.get_internal_vec();
     sendIpc(dataVec.data(), dataVec.size());
 }
 
-void Ipc::sendNpcInfo(int32_t id, uint32_t npcId, bool isAttackable, int32_t x, int32_t y, int32_t z) {
-    // mimic EPacketSC::EX_NPC_INFO layout
-    printf("send npc Info\n");
-
+void Ipc::sendGameInfos() {
     simple::mem_ostream<std::true_type> out;
-
-    out << (uint16_t)0;                     // packet size placeholder;
-    out << (uint16_t)ECode::PACKET_RCV;
-    out << (int16_t)0x35;                   //L2 Packet size
-    out << (uint8_t)EPacketSC::EX_NPC_INFO; //L2 Packet opcode
-    out << id;
-    out << (int64_t)0;                      // SKIP
-    out << (int8_t)0;                       // SKIP
-    out << (int32_t)isAttackable;
-    out << std::wstring(L" ");             
-    out << (uint16_t)0x44;
-    out << npcId + 1000000;
-    out << x;
-    out << y;
-    out << (int32_t)0;                      // SKIP 
-    out << (int32_t)0;                      // SKIP 
-    out << (int32_t)0;                      // SKIP 
-
-    const auto& dataVec = out.get_internal_vec();
-    sendIpc(dataVec.data(), dataVec.size());
-}
-
-void Ipc::sendLocalPlayerInfo(int32_t id, uint32_t npcId, bool isAttackable, int32_t x, int32_t y, int32_t z, std::wstring name) {
-    // mimic EPacketSC::CHAR_SELECTED layout
-    printf("send local player Info\n");
-
-    simple::mem_ostream<std::true_type> out;
-    std::wstring title = L"ABAB";
 
     out << (uint16_t)0;                      // packet size placeholder
-    out << (uint16_t)ECode::PACKET_RCV;
-    out << (int16_t)0;                      //L2 Packet size
-    out << (uint8_t)EPacketSC::CHAR_SELECTED; //L2 Packet opcode
-    out << name;
-    out << id;
-    out << title;
-    out << (int32_t)0;                      // sessionId
-    out << (int32_t)0;                      // clandId
-    out << (int32_t)0;                      // unk
-    out << (int32_t)0;                      // sex
-    out << (int32_t)0;                      // race
-    out << (int32_t)0;                      // classId
-    out << (int32_t)0;                      // unk2
-    out << (int32_t)x;
-    out << (int32_t)y;
-    out << (int32_t)z;
+    out << (uint16_t)ECode::GAME_INFO;
+
+    const FVector playerPos = game->getPlayerPosition();
+    out << (int32_t)playerPos.X << (int32_t)playerPos.Y << (int32_t)playerPos.Z;
 
     const auto& dataVec = out.get_internal_vec();
     sendIpc(dataVec.data(), dataVec.size());
@@ -102,17 +59,23 @@ void Ipc::sendLocalPlayerInfo(int32_t id, uint32_t npcId, bool isAttackable, int
 
 Ipc::Ipc() {
     buffer = new BYTE[IPC_BUFFER_SIZE];
-    DWORD pid = GetCurrentProcessId();
-    std::wstring socketReceiveName{ L"\\\\.\\pipe\\APipeS" + std::to_wstring(pid) };
-    std::wstring socketSendName{ L"\\\\.\\pipe\\APipeR" + std::to_wstring(pid) };
+    connect();
+}
 
-    pipeReceive = CreateFileW(socketReceiveName.data(), GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-    pipeSend = CreateFileW(socketSendName.data(), GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
-    if (pipeSend != INVALID_HANDLE_VALUE && pipeReceive != INVALID_HANDLE_VALUE) {
+void Ipc::connect()
+{
+    DWORD pid = GetCurrentProcessId();
+    std::wstring socketReceiveName{ L"\\\\.\\pipe\\APipeS" + std::to_wstring( pid ) };
+    std::wstring socketSendName{ L"\\\\.\\pipe\\APipeR" + std::to_wstring( pid ) };
+
+    pipeReceive = CreateFileW( socketReceiveName.data(), GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL );
+    pipeSend = CreateFileW( socketSendName.data(), GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL );
+    if( pipeSend != INVALID_HANDLE_VALUE && pipeReceive != INVALID_HANDLE_VALUE ) {
+        printf( "Pipe initialized.\n" );
         sendStart();
     }
     else {
-        printf("Invalid pipe handle %p %p\n", pipeReceive, pipeSend);
+        printf( "Invalid pipe handle %p %p %x\n", pipeReceive, pipeSend, GetLastError() );
     }
 }
 
@@ -148,7 +111,7 @@ void Ipc::update() {
             case ECode::SHUTDOWN:
             {
                 printf("Shutdown requested\n");
-                receivedShutdown = true;
+                needShutdown = true;
             }
             break;
             break;
@@ -166,6 +129,11 @@ void Ipc::update() {
                 game->sendPacket(packetData.data());
             }
             break;
+            case ECode::REQ_GAME_INFO:
+            {
+                sendGameInfos();
+            }
+            break;
             }
         }
     }
@@ -176,15 +144,21 @@ void Ipc::sendTcp(const char* buffer)
 }
 
 void Ipc::sendIpc(const char* data, size_t len) {
+    if( pipeSend == INVALID_HANDLE_VALUE )
+        connect();
+
     DWORD dwWritten;
     uint16_t sentLen = (uint16_t)len;   // Length is sent on 2 bytes
     std::memcpy((void*)data, (void*)&sentLen, sizeof(sentLen));
+    printf( "sendStart %s --- %d\n", hexStr( (unsigned char*)data, sentLen ).c_str(), sentLen );
     if (!WriteFile(pipeSend, data, sentLen, &dwWritten, NULL)) {
-        printf("IPc WriteFile fail\n");
-        receivedShutdown = true;
+        int error = GetLastError();
+
+        printf("Ipc WriteFile fail, error code: %x\n", error);
+        needShutdown = true;
     }
 }
 
 bool Ipc::shouldShutdown() {
-    return receivedShutdown;
+    return needShutdown;
 }

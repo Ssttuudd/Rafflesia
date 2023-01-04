@@ -13,6 +13,8 @@
 #include "LocalPlayer.h"
 #include "Status.h"
 
+class Position;
+
 class Game
 {
 public:
@@ -26,6 +28,7 @@ public:
 	void addCharacter(CharacterPtr character);
 	void updateStatus(uint32_t objId, const std::vector<Status>& status);
 	LocalPlayerPtr getPlayer();
+	const LocalPlayerPtr getPlayer() const;
 	void setPlayer(LocalPlayerPtr player);
 	const std::map<int, CharacterPtr>& getCharacters();
 	CharacterPtr getCharacter(int objectId);
@@ -34,6 +37,7 @@ public:
 	void moveToPosition(uint32_t objectId, uint32_t destX, uint32_t destY, uint32_t destZ, uint32_t fromX, uint32_t fromY, uint32_t fromZ); 
 	void setPosition(uint32_t objectId, uint32_t x, uint32_t y, uint32_t z, uint32_t heading = 0);
 	void setPosition(uint32_t objectId, const Position& position);
+	void setPlayerPosition( const Position& position );
 	void teleport(uint32_t objectId, const Position& position);
 	void stopMove(uint32_t objectId, uint32_t x, uint32_t y, uint32_t z, uint32_t heading);
 	void setPlayerTarget(uint32_t targetId, uint32_t levelDiff);
@@ -62,21 +66,13 @@ public:
 
 	// Buff
 	void addBuff(Buff buff);
-	bool hasBuff(uint32_t buffId);
+	bool hasBuff(uint32_t buffId) const;
 	void clearBuffList();
 
 	void setInCombattatus(int32_t targetId, bool autoAttacking);
 	void restart();
 
-	// lua
-	std::string getPlayerName() const;
-	bool hasTarget() const;
-	Character* getTarget();
-	Character* getPlayerLua();
-
 private:
-	void sortCharacters();
-
 	std::map<int, DroppedItemPtr> droppedItems;
 	std::map<int, InventoryItemPtr> inventoryItems;
 	std::map<int, Skill> skills;

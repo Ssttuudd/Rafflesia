@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Bot/Bot.h"
-#include "Condition.h"
+#include "Bot/Condition/Condition.h"
 #include "Game/Game.h"
 
 enum class EUpdatePolicy {
@@ -76,7 +76,7 @@ public:
 		}
 	}
 
-	void addCondition(Condition::ConditionFunc condition) {
+	void addCondition( Conditions::ACondition* condition) {
 		conditions.push_back(condition);
 	}
 
@@ -100,16 +100,16 @@ public:
 protected:
 	std::vector<TaskPtr> sequentialTasks;
 	std::vector<TaskPtr> parallelTasks;
-	EUpdatePolicy policy;
+	EUpdatePolicy policy{ EUpdatePolicy::SEQUENTIAL };
 	LocalPlayerPtr player;
 	size_t taskPosition = 0;
-	std::vector<Condition::ConditionFunc> conditions;
-	EExitPolicy exitPolicy = EExitPolicy::NONE;
+	std::vector<Conditions::ACondition*> conditions;
+	EExitPolicy exitPolicy{ EExitPolicy::NONE };
 
 	bool isValid(Game& game, Bot& bot, Character* character) const {
-		for (const auto c : conditions) {
-			void* target = character ? character : nullptr;
-			if (!c(game, bot, target)) {
+		Conditions::EvaluationCtx ctx{ game, bot };
+		for (auto* c : conditions) {
+			if (!c->evaluate(ctx)) {
 				return false;
 			}
 		}

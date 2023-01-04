@@ -76,5 +76,7 @@ const ItemInfo* Catalog::getItemInfo(uint32_t id) {
     if (items.find(id) != items.end()) {
         return &items[id];
     }
-    return nullptr;
+
+    static ItemInfo invalidItem{ 0, "Unknown item", "Unknown item" };
+    return &invalidItem;
 }

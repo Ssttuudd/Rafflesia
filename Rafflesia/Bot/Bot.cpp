@@ -1,5 +1,7 @@
 #include "Bot.h"
 
+#include <memory>
+
 #include "Game/DroppedItem.h"
 #include "Game/Npc.h"
 
@@ -7,7 +9,10 @@
 
 #include "TaskSerializer.h"
 #include "Task/Task.h"
- 
+#include "Task/TaskPickup.hpp"
+#include "Task/TaskFindTarget.h"
+#include "Task/TaskSweep.hpp"
+
 Bot::Bot(Game* _game, PacketHandler* _packetHandler, PlayerTab* _playerTab) :
 	game{ _game },
 	packetHandler{_packetHandler},
@@ -23,6 +28,11 @@ Bot::Bot(Game* _game, PacketHandler* _packetHandler, PlayerTab* _playerTab) :
 	antiFloodTimers[(int)EBotTimer::ITEM] = 1.0f;
 
 	resetPolygons();
+}
+
+Bot::~Bot()
+{
+
 }
 
 bool Bot::checkFloodTimer(EBotTimer key) {
@@ -41,9 +51,9 @@ void Bot::update(float dt) {
 	
 	if (player) {
 		mainTask->update(dt, *game, *this);
-		if (player->isMoving() && checkFloodTimer(EBotTimer::VALIDATE_POSITION)) {
 
-		}
+		for(auto& task : settingsTasks )
+			task->update( dt, *game, *this );
 	}
 	else {
 		player = game->getPlayer();
@@ -62,7 +72,7 @@ void Bot::addPolygonPoint(Position point) {
 	polygons[polygons.size() - 1].addPosition(point);
 }
 
-bool Bot::isInPolygons(const Position& position) {
+bool Bot::isInPolygons(const Position& position) const {
 	// Target is "inPolygon" if it is inside one "Include" polygon and outside all of the "Exclude" ones.
 	bool inInclude = false;
 	for (const auto& p : polygons) {
@@ -110,7 +120,17 @@ void Bot::toggleStart() {
 			DebugBreak();
 		}
 
+		if( settings.pickupLoots )
+			settingsTasks.emplace_back( std::make_unique<TaskPickup>(settings) );
+		if(settings.findTarget )
+			settingsTasks.emplace_back( std::make_unique<TaskBotFindTarget>( ) );
+		if( settings.sweep )
+			settingsTasks.emplace_back( std::make_unique<TaskSweep>() );
+
 		mainTask->enter(*game, *this);
+
+		for( auto& task : settingsTasks )
+			task->enter( *game, *this );
 	}
 }
 
@@ -235,7 +255,7 @@ bool Bot::findTarget() {
 		return false;
 	}
 
-	Character* foundTarget = nullptr;
+	Character* foundTarget = player->getTarget();
 	float lastDistance = (std::numeric_limits<float>::max)();
 	auto characters = game->getCharacters();
 
@@ -258,10 +278,10 @@ bool Bot::findTarget() {
 			auto dist = distance(character->getPosition(), player->getPosition());
 			const auto id = character->getId();
 			if (id != player->getId()
-				&& (!settings.useUniqueObjectFilters || !isObjectFiltered(id))
-				&& (!settings.useFamilyFilters || !isFamilyFiltered(character.get()))
+				&& (!settings.useUniqueObjectFilters || isObjectFiltered(id))
+				&& (!settings.useFamilyFilters || isFamilyFiltered(character.get()))
 				&& character->isAttackable() && !character->isDead()
-				&& (!settings.usePolygons || isInPolygons(character->getPosition()))) {
+				&& (settings.ignoreTargetZones || isInPolygons(character->getPosition()))) {
 				if (dist < lastDistance) {
 					lastDistance = dist;
 					foundTarget = character.get();

@@ -3,7 +3,7 @@
 #include <map>
 
 #include "Task/TaskAcceptParty.hpp"
-#include "Task/TaskAutoAttack.hpp"
+#include "Task/TaskAutoAttack.h"
 #include "Task/TaskFindTarget.h"
 #include "Task/TaskFollow.hpp"
 #include "Task/TaskMoveToTarget.h"
@@ -14,7 +14,7 @@
 #include "Task/TaskUseSkill.hpp"
 
 using TaskPtr = Task::TaskPtr;
-using namespace Condition;
+using namespace Conditions;
 
 pugi::xml_attribute getAttribute(const pugi::xml_node& node, const std::string name, bool optional = false) {
     const auto res = node.attribute(name.c_str());
@@ -169,7 +169,7 @@ EStat parseStat(const std::string& stat) {
 
 EConditionTarget parseTarget(const std::string& target) {
 	if (target == "Self") {
-		return EConditionTarget::SELF;
+		return EConditionTarget::PLAYER;
 	}
 	else if (target == "Target") {
 		return EConditionTarget::TARGET;
@@ -202,51 +202,53 @@ TaskPtr TaskSerializer::parseTask(pugi::xml_node node) {
     return task;
 }
 
-ConditionFunc TaskSerializer::parseCondition(pugi::xml_node node) {
+ACondition* TaskSerializer::parseCondition(pugi::xml_node node) {
     const std::string name = getAttribute(node, "name").as_string();
     const auto expectedResult = node.attribute("result").as_bool();
 
     if (name == "IsAttackable") {
-        return createIsAttackable(expectedResult);
+        return new CondIsAttackable{ expectedResult };
     }
     else if (name == "IsNpc") {
-        return createIsNpc(expectedResult);
+        return new CondIsNpc{ expectedResult };
     }
 	else if (name == "CharacterStat") {
 		const auto value = getAttribute(node, "value").as_int();
 		const auto stat = getAttribute(node, "stat").as_string();
 		const auto comparison = getAttribute(node, "comparison").as_string();
 		const auto target = getAttribute(node, "target").as_string();
-		return createCharacterStat(parseStat(stat), parseComparison(comparison), parseTarget(target), value, expectedResult);
+        return new CondHasStat{ expectedResult, parseStat( stat ), parseComparison( comparison ), parseTarget( target ), value };
 	}
     else if (name == "PlayerHasBuff") {
-        const auto value = getAttribute(node, "buffId").as_int();
-        return createPlayerHasBuff(value, expectedResult);
+		const auto value = getAttribute( node, "buffId" ).as_int();
+		const auto target = getAttribute( node, "target" ).as_string();
+        return new CondHasBuffId{ expectedResult, parseTarget( target ), value };
     }
     else if (name == "ZDistance") {
         const auto value = getAttribute(node, "maxDistance").as_int();
-        return createZDistance(value, expectedResult);
+        return new CondDistance{ expectedResult, EDistanceType::Z, value };
     }
     else if (name == "Distance") {
-        const auto value = getAttribute(node, "maxDistance").as_int();
-        return createDistance(value, expectedResult);
+		const auto value = getAttribute( node, "maxDistance" ).as_int();
+		return new CondDistance{ expectedResult, EDistanceType::EUCLIDIAN, value };
     }
-    else if (name == "IsInPolygon") {
-        return createIsInPolygon(expectedResult);
+	else if( name == "IsInPolygon" ) {
+		const auto target = getAttribute( node, "target" ).as_string();
+        return new CondIsInPolygon{ expectedResult, parseTarget( target ) };
     }
     else if (name == "IsFiltered") {
-        return createIsFiltered(expectedResult);
+        return new CondIsFiltered{ expectedResult };
     }
     else if (name == "IsSpoiled") {
-        return createIsSpoiled(expectedResult);
+        return new CondIsSpoiled{ expectedResult };
     }
     else if (name == "HasName") {
         const auto value = getAttribute(node, "targetName").as_string();
-        return createHasName(value);
+        return new CondHasName{ expectedResult, value };
     }
     else if (name == "NpcId") {
         const auto value = node.attribute("npcId").as_int();
-        return createNpcId(value, expectedResult);
+        return new CondHasNpcId{ expectedResult, value };
     }
     throw new InvalidXmlTask("Unknown condition name: " + std::string(name));
     return nullptr;

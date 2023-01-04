@@ -6,14 +6,14 @@
 #include "GameData.h"
 
 struct PlayerData: public Actor {
-	int32_t id;
+	int32_t id{ -1 };
 	Position position;
 	std::string name;
 	std::string title;
 };
 
 struct UserInfoData {
-	int32_t id;
+	int32_t id{ -1 };
 	std::string name;
 	uint8_t isGm;
 	uint8_t race;
@@ -44,9 +44,9 @@ struct UserInfoData {
 	uint32_t castSpd;
 	uint32_t pvpCount;
 	uint32_t karma;
-	uint32_t posX;
-	uint32_t posY;
-	uint32_t posZ; 
+	int32_t posX;
+	int32_t posY;
+	int32_t posZ;
 	uint16_t runSpeed;
 	uint16_t walkSpeed;
 	uint16_t swimRunSpeed;

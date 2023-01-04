@@ -2,9 +2,8 @@
 
 #include "Packet140.h"
 #include "Packet306.h"
-#include "PacketSpecial.h"
 #include "Game/Status.h"
-#include "utils.h"
+#include "Shared/IpcShared.h"
 
 void PacketHandler::moveToLocation(const Position& playerPos, const Position& targetPos) {
 	auto data = craftMoveToPosition(playerPos, targetPos);
@@ -50,83 +49,62 @@ void PacketHandler::answerPartyRequest(bool answer) {
 	networkInterface->sendPacket(data.data(), data.size());
 }
 
-void PacketHandler::init306() {
-	parseMapSC[EPacketSC::CHANGE_WAIT_TYPE] = parseChangeWaitType_306;
-	parseMapSC[EPacketSC::CHAR_SELECTED] = parseCharSelected_306;
-	parseMapSC[EPacketSC::CHARINFO] = parseCharInfo_306;
-	parseMapSC[EPacketSC::DELETE_OBJECT] = parseDeleteItem_306;
-	parseMapSC[EPacketSC::DIE] = parseDie_306;
-	parseMapSC[EPacketSC::DROP_ITEM] = parseDropItem_306;
-	parseMapSC[EPacketSC::EX_NPC_INFO] = parseNpcInfo_306;
-	parseMapSC[EPacketSC::MOVE_TO_LOCATION] = parseMoveToPosition_306;
-	parseMapSC[EPacketSC::MOVE_TO_PAWN] = parseMoveToPawn_306;
-	parseMapSC[EPacketSC::MY_TARGET_SELECTED] = parseMyTargetSelected_306;
-	parseMapSC[EPacketSC::S_VALIDATE_LOCATION] = parseMoveValidation_306;
-	parseMapSC[EPacketSC::SKILL_LIST] = parseSkillList_306;
-	parseMapSC[EPacketSC::SPKT_FE] = parseFePacket_306;
-	parseMapSC[EPacketSC::SYSTEM_MESSAGE] = parseSystemMessage_306;
-	parseMapSC[EPacketSC::STATUS_UPDATE] = parseUpdateStatus_306;
-	parseMapSC[EPacketSC::TARGET_SELECTED] = parseTargetSelected_306;
-	parseMapSC[EPacketSC::TARGET_UNSELECTED] = parseTargetUnselected_306;
+void PacketHandler::requestGameInfos()
+{
+	PacketOStream stream;
+	stream << (int32_t)IPC_HEADER_SIZE;
+	stream << (int32_t)ECode::REQ_GAME_INFO;
+	const auto data = stream.get_internal_vec();
+	networkInterface->sendPacket( data.data(), data.size() );
 }
 
-void PacketHandler::init140() {
-	parseMapSC[EPacketSC::COMBAT_START] = parseCombatStatusStart_140;
-	parseMapSC[EPacketSC::COMBAT_STOP] = parseCombatStatusStop_140;
-	parseMapSC[EPacketSC::CHANGE_WAIT_TYPE] = parseChangeWaitType_140;
-	parseMapSC[EPacketSC::CHAR_SELECTED] = parseCharSelected_140;
-	parseMapSC[EPacketSC::CHARINFO] = parseCharInfo_140;
-	parseMapSC[EPacketSC::DELETE_OBJECT] = parseDeleteItem_140;
-	parseMapSC[EPacketSC::DIE] = parseDie_140; 
-	parseMapSC[EPacketSC::DROP_ITEM] = parseDropItem_140;
-	parseMapSC[EPacketSC::EX_NPC_INFO] = parseNpcInfo_140;
-	parseMapSC[EPacketSC::MAGIC_SKILL_USE] = parseMagicSkillUsed_140;
-	parseMapSC[EPacketSC::MOVE_TO_LOCATION] = parseMoveToPosition_140;
-	parseMapSC[EPacketSC::MY_TARGET_SELECTED] = parseMyTargetSelected_140; 
-	parseMapSC[EPacketSC::S_VALIDATE_LOCATION] = parseValidatePosition_140;
-	parseMapSC[EPacketSC::SPKT_FE] = parsePacketFe_140;
-	parseMapSC[EPacketSC::SPKT_11] = parsePacket11_140;
-	parseMapSC[EPacketSC::STATUS_UPDATE] = parseUpdateStatus_140;
-	parseMapSC[EPacketSC::TARGET_SELECTED] = parseTargetSelected_140;
-	parseMapSC[EPacketSC::TARGET_UNSELECTED] = parseTargetUnselected_140;
-	parseMapSC[EPacketSC::TELEPORT] = parseteleport_140;
-	parseMapSC[EPacketSC::USER_INFO] = parseUserInfo_140;
-	parseMapSC[EPacketSC::MAGIC_SKILL_CANCELED] = parseMagicSkillCanceled_140; 
-	parseMapSC[EPacketSC::MAGIC_SKILL_LAUNCHED] = parseMagicSkillLaunched_140;
-	parseMapSC[EPacketSC::RESTART_RESPONSE] = parseRestartResponse_140;
-	parseMapSC[EPacketSC::SKILL_LIST] = parseSkillList_140; 
-	parseMapSC[EPacketSC::SPAWN_ITEM] = parseSpawnItem_140; 
-	parseMapSC[EPacketSC::SYSTEM_MESSAGE] = parseSystemMessage_140;
-	parseMapSC[EPacketSC::ABNORMAL_STATUS] = parseAbnormalStatusUpdate_140;
-	parseMapSC[EPacketSC::PARTY_REQUEST] = parsePartyRequest_140;
-
-	parseMapCS[EPacketCS::VALIDATE_POSITION] = parseValidatePositionCS_140;
-}
+/*void PacketHandler::init306() {
+	parseMapSC[EPacketSC::CHANGE_WAIT_TYPE] = { "CHANGE_WAIT_TYPE", parseChangeWaitType_306 };
+	parseMapSC[EPacketSC::CHAR_SELECTED] = { "CHAR_SELECTED", parseCharSelected_306 };
+	parseMapSC[EPacketSC::CHARINFO] = { "CHARINFO", parseCharInfo_306 };
+	parseMapSC[EPacketSC::DELETE_OBJECT] = { "DELETE_OBJECT", parseDeleteItem_306 };
+	parseMapSC[EPacketSC::DIE] = { "DIE", parseDie_306 };
+	parseMapSC[EPacketSC::DROP_ITEM] = { "DROP_ITEM", parseDropItem_306 };
+	parseMapSC[EPacketSC::EX_NPC_INFO] = { "EX_NPC_INFO", parseNpcInfo_306 };
+	parseMapSC[EPacketSC::MOVE_TO_LOCATION] = { "MOVE_TO_LOCATION", parseMoveToPosition_306 };
+	parseMapSC[EPacketSC::MOVE_TO_PAWN] = { "MOVE_TO_PAWN", parseMoveToPawn_306 };
+	parseMapSC[EPacketSC::MY_TARGET_SELECTED] = { "MY_TARGET_SELECTED", parseMyTargetSelected_306 };
+	parseMapSC[EPacketSC::S_VALIDATE_LOCATION] = { "S_VALIDATE_LOCATION", parseMoveValidation_306 };
+	parseMapSC[EPacketSC::SKILL_LIST] = { "SKILL_LIST", parseSkillList_306 };
+	parseMapSC[EPacketSC::SPKT_FE] = { "SPKT_FE", parseFePacket_306 };
+	parseMapSC[EPacketSC::SYSTEM_MESSAGE] = { "SYSTEM_MESSAGE", parseSystemMessage_306 };
+	parseMapSC[EPacketSC::STATUS_UPDATE] = { "STATUS_UPDATE", parseUpdateStatus_306 };
+	parseMapSC[EPacketSC::TARGET_SELECTED] = { "TARGET_SELECTED", parseTargetSelected_306 };
+	parseMapSC[EPacketSC::TARGET_UNSELECTED] = { "TARGET_UNSELECTED", parseTargetUnselected_306 };
+}*/
 
 PacketHandler::PacketHandler(Game& _game, INetworkInterface* _networkInterface) :
 	game(_game),
 	networkInterface(_networkInterface)
 {
 	//init306();
-	init140();
+	Protocol140::initPacketMaps( parseMapSC, parseMapCS );
 }
 
-void PacketHandler::parse(const std::vector<char>& data, bool clientToServer) {
-	if (data.size() < 3) {
-		return;
-	}
+bool PacketHandler::isPacketValid( const std::vector<char>& data ) const
+{
+	return data.size() >= 3;
+}
 
-	PacketIStream stream(data);
-	uint16_t length;
-	uint8_t opcode;
-	stream >> length >> opcode;
-
-	if (clientToServer) {
-		if (parseMapCS.find((EPacketCS)opcode) != std::end(parseMapCS)) {
-			parseMapCS[(EPacketCS)opcode](stream, game);
+APacket* PacketHandler::getPacket( const std::vector<char>& data, bool clientToServer )
+{
+	if( isPacketValid( data ) )
+	{
+		uint8_t opcode = data[2];
+		if( clientToServer ) {
+			if( parseMapCS.find( (EPacketCS)opcode ) != std::end( parseMapCS ) ) {
+				return &parseMapCS[(EPacketCS)opcode];
+			}
+		}
+		else if( parseMapSC.find( (EPacketSC)opcode ) != std::end( parseMapSC ) ) {
+			return &parseMapSC[(EPacketSC)opcode];
 		}
 	}
-	else if (parseMapSC.find((EPacketSC)opcode) != std::end(parseMapSC)) {
-		parseMapSC[(EPacketSC)opcode](stream, game);
-	}
+
+	return nullptr;
 }

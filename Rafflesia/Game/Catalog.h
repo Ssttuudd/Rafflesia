@@ -5,15 +5,15 @@
 #include <vector>
 
 struct NpcInfo {
-	int id;
+	int id{ 0 };
 	std::string name;
 	std::string description;
-	int runSpeed;
-	int walkSpeed;
+	int runSpeed{ 0 };
+	int walkSpeed{ 0 };
 };
 
 struct ItemInfo {
-	int id;
+	int id{ 0 };
 	std::string name;
 	std::string description;
 };

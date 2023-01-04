@@ -91,9 +91,6 @@
     <ClCompile Include="Bot\Task\TaskFindTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Network\PacketSpecial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Bot\Task\TaskMoveToTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -139,7 +136,7 @@
     <ClCompile Include="Game\Catalog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bot\Task\Condition.cpp">
+    <ClCompile Include="Bot\Condition\Condition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bot\Task\TaskMove.cpp">
@@ -155,6 +152,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="third_party\pugixml\src\pugixml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Network\Packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot\Condition\ConditionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot\Task\TaskAutoAttack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt\Rules\QtCondition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -222,13 +231,10 @@
     <ClInclude Include="Bot\Task\Task.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bot\Task\Condition.h">
+    <ClInclude Include="Bot\Condition\Condition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bot\Task\TaskFindTarget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Network\PacketSpecial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bot\Task\TaskMoveToTarget.h">
@@ -267,9 +273,6 @@
     <ClInclude Include="Game\Catalog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bot\Task\TaskAutoAttack.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Bot\Task\TaskRest.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -295,6 +298,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="third_party\pugixml\src\pugixml.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Network\Packet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Condition\ConditionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Task\TaskAutoAttack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -333,6 +345,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Qt\Inventory\IntentoryItemElement.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Qt\Rules\QtCondition.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -377,6 +392,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Qt\Inventory\IntentoryItemElement.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt\Rules\QtCondition.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

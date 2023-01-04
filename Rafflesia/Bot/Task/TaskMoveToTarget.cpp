@@ -14,11 +14,10 @@ void TaskMoveToTarget::enter(Game& game, Bot& bot) {
 }
 
 bool TaskMoveToTarget::update(float dt, Game& game, Bot& bot) {
-	/*if (!player->canMove()) {
-		return false;
-	}*/
-
 	Task::update(dt, game, bot);
+
+	if( !player || player->isDead() )
+		return false;
 
 	auto target = game.getPlayer()->getTarget();
 	if (!target) {
@@ -35,6 +34,10 @@ bool TaskMoveToTarget::update(float dt, Game& game, Bot& bot) {
 		}
 	}
 
+	auto distance = player->getDistance( targetLocation );
+	if( distance < stopDistance )
+		return true;
+
 	if (sentPacket) {
 		timeSinceLastmove += dt;
 
@@ -43,8 +46,6 @@ bool TaskMoveToTarget::update(float dt, Game& game, Bot& bot) {
 			moveToTarget(bot);
 		}
 
-		auto distance = player->getDistance(targetLocation);
-		return distance < stopDistance;
 	}
 	else {
 		targetLocation = target->getPosition();
@@ -56,8 +57,5 @@ bool TaskMoveToTarget::update(float dt, Game& game, Bot& bot) {
 }
 
 void TaskMoveToTarget::moveToTarget(Bot& bot) {
-	auto loc = targetLocation;
-	loc.x += rand() % 10 - 5;
-	loc.y += rand() % 10 - 5;
-	bot.moveToLocation(loc);
+	bot.moveToLocation( targetLocation );
 }

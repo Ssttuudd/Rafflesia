@@ -33,6 +33,20 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QCheckBox" name="autoAttachBot">
+     <property name="text">
+      <string>Automatically attach bot</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="autoPatchClients">
+     <property name="text">
+      <string>Automatically attach anti anti cheats</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
       <number>0</number>

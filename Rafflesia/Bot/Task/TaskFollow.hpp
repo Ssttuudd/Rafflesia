@@ -13,7 +13,10 @@ public:
 		startDistance = _startDistance;
 	}
 
-	bool TaskFollow::update(float dt, Game& game, Bot& bot) {
+	bool update(float dt, Game& game, Bot& bot) {
+		if( !player || player->isDead() )
+			return false;
+
 		auto target = player->getTarget();
 		if (target) {
 			const auto dist = distance(target->getPosition(), player->getPosition());

@@ -3,18 +3,27 @@
 #include "Task.h"
 #include "Game/LocalPlayer.h"
 
-
 class TaskPickup: public Task
 {
 public:
-	TaskPickup(int _range, bool _sweep) {
+	TaskPickup( int _range, bool _sweep ) {
 		range = _range;
 		sweep = _sweep;
 	}
+
+	TaskPickup(BotSettings& settings) {
+		range = settings.pickupRange;
+		sweep = settings.sweep;
+		betweenFights = settings.pickupBetweenFights;
+	}
+
 	bool update(float dt, Game& game, Bot& bot) {
-		/*if (game.playerHasAggro()) {
+		if( !player || player->isDead() )
+			return false;
+		
+		if (betweenFights && game.playerHasAggro()) {
 			return true;
-		}*/
+		}
 
 		auto target = player->getTarget();
 		auto playerPosition = player->getPosition();
@@ -43,7 +52,8 @@ public:
 	}
 
 private:
-	int range = 0;
-	bool sweep = false;
+	int range{ 0 };
+	bool sweep{ false };
+	bool betweenFights{ false };
 };
 

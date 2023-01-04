@@ -4,17 +4,11 @@
 #include <unordered_set>
 #include <vector>
 
-#include "Module.h"
-
 #include <iostream>
 #include <fstream>
 
-enum class ELevelTick {
-	LEVELTICK_TimeOnly = 0,
-	LEVELTICK_ViewportsOnly = 1,
-	LEVELTICK_All = 2,
-	LEVELTICK_PauseTick = 3,
-};
+#include "Module.h"
+#include "../Shared/IpcShared.h"
 
 class Ipc;
 class Game
@@ -22,6 +16,11 @@ class Game
 public:
 	void init(const Module& engine, Ipc* ipc);
 	void sendPacket(const char* buffer);
+
+	void setPlayerPosition( const FVector& position ) { playerPosition = position; }
+	const FVector& getPlayerPosition() { return playerPosition; }
+
+	void setPacketFormaterAddr( DWORD ptr ) { packetFormaterAddr = ptr; }
 
 private:
 	Ipc* ipc;
@@ -33,6 +32,7 @@ private:
 
 	SendClientPacket sendClientPacket;
 
-	float waitingX = 0, waitingY = 0, waitingZ = 0;
+	FVector playerPosition;
+	DWORD packetFormaterAddr{ 0 };
 };
 

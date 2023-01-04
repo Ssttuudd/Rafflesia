@@ -13,10 +13,20 @@ enum class ECode {
 	PACKET_SND,			// Packet sent by the L2 client
 	SEND_PACKET,		// Send crafted packet
 	SEND_RAW_PACKET,	// Send raw data (packet crafted from the bot)
-	DEBUG
+	DEBUG,
+	GAME_INFO,
+	REQ_GAME_INFO
 };
 
 struct IpcHeader {
 	uint16_t size;
 	uint16_t code;
+};
+
+class FVector
+{
+public:
+	float X;
+	float Y;
+	float Z;
 };

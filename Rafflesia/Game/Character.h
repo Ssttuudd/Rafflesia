@@ -29,7 +29,7 @@ public:
 	void resetTarget() { target = nullptr; }
 	void setSpeed(uint16_t runSpeed, uint16_t walkspeed, uint16_t swimRunSpeed, uint16_t swimWalkSpeed, double speedMultiplier);
 	void setDead();
-	void setDestination(int32_t x, int32_t y, int32_t z);
+	void setDestination( int32_t x, int32_t y, int32_t z);
 	void setSweepable(bool value) { sweepable = value; }
 	void setSpoiled(bool value) { spoiled = value; }
 	void setInParty(bool value) { inParty = value; }

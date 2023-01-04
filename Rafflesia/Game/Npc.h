@@ -4,9 +4,9 @@
 #include "GameData.h"
 
 struct NpcData : ActorData {
-	uint32_t npcId = 0;
-	bool attackable;
-	int32_t heading;
+	uint32_t npcId{ 0 };
+	bool attackable{ false };
+	int32_t heading{ 0 };
 };
 
 class Npc : public Character

@@ -25,21 +25,26 @@ void Game::update(float dt) {
 
 void Game::addDroppedItem(DroppedItemData data) {
 	auto item = std::make_shared<DroppedItem>(data);
-	data.name = catalog->getItemInfo(data.itemId)->name;
-	droppedItems.emplace(data.id, item);
-	NOTIFY(onDroppedItemSpawn, item.get());
-}
+	if( const ItemInfo* itemInfo = catalog->getItemInfo( data.itemId ) )
+	{
+		data.name = itemInfo->name;
+		droppedItems.emplace( data.id, item );
+		NOTIFY( onDroppedItemSpawn, item.get() );
+	}
+}	
 
 void Game::addInventoryItem(InventoryItemData data) {
-	const auto* itemInfo = catalog->getItemInfo(data.itemId);
-	auto item = std::make_shared<InventoryItem>(itemInfo->name, data);
-	if (inventoryItems.find(data.id) != inventoryItems.end()) {
-		inventoryItems[data.id]->update(data);
-		NOTIFY(onInventoryItemUpdate, item.get());
-	}
-	else {
-		inventoryItems.emplace(data.id, item);
-		NOTIFY(onInventoryItemAdd, item.get());
+	if( const auto* itemInfo = catalog->getItemInfo( data.itemId ) )
+	{
+		auto item = std::make_shared<InventoryItem>( itemInfo->name, data );
+		if( inventoryItems.find( data.id ) != inventoryItems.end() ) {
+			inventoryItems[data.id]->update( data );
+			NOTIFY( onInventoryItemUpdate, item.get() );
+		}
+		else {
+			inventoryItems.emplace( data.id, item );
+			NOTIFY( onInventoryItemAdd, item.get() );
+		}
 	}
 }
 
@@ -61,16 +66,19 @@ void Game::removeActor(int32_t objectId) {
 }
 
 void Game::addCharacter(CharacterPtr character) {
-	characters.emplace(character->getId(), character);
-	if (player && character->getId() != player->getId()) {
-		if (character->isNpc()) {
-			const auto* npcInfo = catalog->getNpcInfo(((Npc*)character.get())->GetNpcId());
-			if (npcInfo) {
-				character->setName(npcInfo->name);
-				character->setSpeed(npcInfo->runSpeed, npcInfo->walkSpeed, 0, 0, 1);
+	if( !getCharacter( character->getId() ) )
+	{
+		characters.emplace( character->getId(), character );
+		if( player && character->getId() != player->getId() ) {
+			if( character->isNpc() ) {
+				const auto* npcInfo = catalog->getNpcInfo( ((Npc*)character.get())->GetNpcId() );
+				if( npcInfo ) {
+					character->setName( npcInfo->name );
+					character->setSpeed( npcInfo->runSpeed, npcInfo->walkSpeed, 0, 0, 1 );
+				}
 			}
+			NOTIFY( onCharacterSpawn, character.get() );
 		}
-		NOTIFY(onCharacterSpawn, character.get());
 	}
 }
 
@@ -140,6 +148,13 @@ LocalPlayerPtr Game::getPlayer() {
 	return player;
 }
 
+const LocalPlayerPtr Game::getPlayer() const {
+	if( !player || player->getId() == 0 ) {
+		return nullptr;
+	}
+	return player;
+}
+
 const std::map<int, CharacterPtr>& Game::getCharacters() {
 	return characters;
 }
@@ -196,6 +211,12 @@ void Game::teleport(uint32_t objectId, const Position& position) {
 	}
 }
 
+void Game::setPlayerPosition(const Position& position)
+{
+	if( player )
+		player->setClientPosition( position );
+}
+
 void Game::stopMove(uint32_t objectId, uint32_t x, uint32_t y, uint32_t z, uint32_t heading) {
 	if (characters.find(objectId) != characters.end()) {
 		auto character = characters[objectId];
@@ -213,7 +234,11 @@ void Game::setWaitType(uint32_t objectId, EState waitType) {
 }
 
 void Game::setPlayerTarget(uint32_t targetId, uint32_t levelDiff) {
-	if (player && characters.find(targetId) != characters.end()) {
+	if( targetId == -1 )
+	{
+		NOTIFY( onPlayerTargetChange, nullptr );
+	}
+	else if (player && characters.find(targetId) != characters.end()) {
 		auto target = characters[targetId];
 		player->setTarget(target.get());
 		target->setLevel(player->getLevel() - levelDiff);
@@ -222,7 +247,7 @@ void Game::setPlayerTarget(uint32_t targetId, uint32_t levelDiff) {
 }
 
 void Game::setTarget(uint32_t objectId, uint32_t targetId) {
-	if (characters.find(objectId) != characters.end()) {
+	if ( player && characters.find(objectId) != characters.end()) {
 		if (characters.find(targetId) != characters.end()) {
 			auto character = characters[objectId];
 			auto target = characters[targetId];
@@ -253,7 +278,7 @@ void Game::addBuff(Buff buff) {
 	buffs[buff.id] = buff;
 }
 
-bool Game::hasBuff(uint32_t buffId) {
+bool Game::hasBuff(uint32_t buffId) const {
 	return buffs.find(buffId) != std::end(buffs);
 }
 
@@ -300,7 +325,7 @@ void Game::setUserInfo(UserInfoData data) {
 		}
 	}
 	
-	character->setPosition({ (int32_t)data.posX, (int32_t)data.posY, (int32_t)data.posZ });
+	character->setPosition({ data.posX, data.posY, data.posZ });
 	character->setHp(data.curHp);
 	character->setMaxHp(data.maxHp);
 	character->setMp(data.curMp);
@@ -406,26 +431,4 @@ void Game::removePartyMember(CharacterPtr character) {
 
 void Game::requestParty(const std::string& name) {
 	NOTIFY(onPartyRequest, name);
-}
-
-std::string Game::getPlayerName() const {
-	if (player) {
-		return player->getName();
-	}
-	return "InvalidPlayer";
-}
-
-bool Game::hasTarget() const {
-	return player && player->getTarget();
-}
-
-Character* Game::getTarget() {
-	return player ? player->getTarget() : nullptr;
-}
-
-Character* Game::getPlayerLua() {
-	if (!player || player->getId() == 0) {
-		return nullptr;
-	}
-	return player.get();
 }
