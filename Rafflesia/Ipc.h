@@ -18,12 +18,13 @@ public:
 	~Ipc();
 
 	bool connect(DWORD pid);
-	void stop() { shouldStop = true; }
+	void stop();
 
 private:
 	DWORD pid{ 0 };
 	HANDLE pipeReceive{ nullptr };
 	HANDLE pipeSend{ nullptr };
+	HANDLE threadHandle{ nullptr };
 	BYTE* buffer{ nullptr };;
 	bool shouldStop{ false };
 

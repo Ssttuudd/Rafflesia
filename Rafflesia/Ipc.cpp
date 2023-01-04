@@ -58,6 +58,8 @@ void Ipc::run()
 	DWORD dwRead = 0;
 	std::vector<char> data(IPC_BUFFER_SIZE, ' ');
 
+	threadHandle = GetCurrentThread();
+
 	while (!shouldStop) {
 		if (ConnectNamedPipe(pipeReceive, nullptr)) {
 			while (!shouldStop && ReadFile(pipeReceive, data.data(), IPC_BUFFER_SIZE, &dwRead, nullptr)) {
@@ -113,4 +115,10 @@ void Ipc::sendPacket(const char* data, int len) {
 	if (!WriteFile(pipeSend, data, len, &dwWritten, NULL)) {
 		sendMessage("IPc WriteFile fail\n");
 	}
+}
+
+void Ipc::stop()
+{ 
+	shouldStop = true; 
+	CancelSynchronousIo( threadHandle );
 }
